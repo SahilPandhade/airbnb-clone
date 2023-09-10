@@ -5,9 +5,10 @@ import { UserContext } from '../context/Context'
 
 const LoginPage = () => {
     const {setUser} = useContext(UserContext)
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [redirect,setRedirect] = useState(false)
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [redirect,setRedirect] = useState<boolean>(false)
+
     const handleLoginSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {

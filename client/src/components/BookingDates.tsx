@@ -2,33 +2,8 @@ import { faCalendarDays, faMoon } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { differenceInCalendarDays, format } from 'date-fns'
 import React from 'react'
-interface PlaceType {
-    photos: string[],
-    _id: string,
-    owner: string,
-    title: string,
-    address: string,
-    description: string,
-    perks: string[],
-    extraInfo: string,
-    checkIn: string,
-    checkOut: string,
-    maxGuests: Number,
-    __v: number
-}
-interface BookingProps {
-    __v: string,
-    _id: string,
-    place: PlaceType,
-    user: string,
-    checkIn: Date,
-    checkOut: Date,
-    maxGuests: Number,
-    price: Number,
-    name: string,
-    mobile: string,
-    numberOfGuests: Number,
-}
+import { BookingProps } from '../Types/Types'
+
 const BookingDates = ({booking,className}:{booking:BookingProps,className?:string}) => {
     return (
         <div className={"flex gap-1 "+className}>

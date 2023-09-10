@@ -1,39 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import AccountNav from '../AccountNav'
+import AccountNav from '../components/AccountNav'
 import axios from 'axios'
-import PlaceImg from '../PlaceImg'
-import { differenceInCalendarDays, format } from 'date-fns'
+import PlaceImg from '../components/PlaceImg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarDays, faMoon, faWallet } from '@fortawesome/free-solid-svg-icons'
+import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import BookingDates from '../BookingDates'
-interface PlaceType {
-    photos: string[],
-    _id: string,
-    owner: string,
-    title: string,
-    address: string,
-    description: string,
-    perks: string[],
-    extraInfo: string,
-    checkIn: string,
-    checkOut: string,
-    maxGuests: Number,
-    __v: number
-}
-interface BookingProps {
-    __v: string,
-    _id: string,
-    place: PlaceType,
-    user: string,
-    checkIn: Date,
-    checkOut: Date,
-    maxGuests: Number,
-    price: Number,
-    name: string,
-    mobile: string,
-    numberOfGuests: Number,
-}
+import BookingDates from '../components/BookingDates'
+import { BookingProps } from '../Types/Types'
+
 const BookingsPage = () => {
     const [bookings, setBookings] = useState<BookingProps[]>([])
 

@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 
 const RegisterPage = () => {
     const [name, setName] = useState<string>('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
 
     const registerUser = async (e: FormEvent) => {
         e.preventDefault();
@@ -18,6 +18,7 @@ const RegisterPage = () => {
             alert(`Registration successful for ${name}. Now you can log in`)
         } catch (e) {
             alert('Registration failed.Please try again later.')
+            console.log("Registration error: ",e)
         }
     }
     return (

@@ -3,11 +3,12 @@ import { UserContext } from '../context/Context'
 import { Navigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import PlacesPage from './PlacesPage'
-import AccountNav from '../AccountNav'
+import AccountNav from '../components/AccountNav'
 
 const AccountPage = () => {
-    const [redirect, setRedirect] = useState<string | null>(null)
     const { ready, user, setUser } = useContext(UserContext)
+    const [redirect, setRedirect] = useState<string | null>(null)
+    
     let { subpage } = useParams()
     if (subpage === undefined) {
         subpage = 'profile'

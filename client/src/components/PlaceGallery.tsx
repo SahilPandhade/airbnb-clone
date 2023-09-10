@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 interface PlaceType {
     photos: string[],
+    __v: string,
     _id: string,
     owner: string,
     title: string,
@@ -13,7 +14,7 @@ interface PlaceType {
     checkIn: string,
     checkOut: string,
     maxGuests: Number,
-    __v: number
+   
 }
 const PlaceGallery = ({ place }: { place: PlaceType }) => {
     const [showAllPhotos, setShowAllPhotos] = useState<boolean>(false);

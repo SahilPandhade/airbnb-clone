@@ -1,36 +1,11 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import AddressLink from '../AddressLink'
-import PlaceGallery from '../PlaceGallery'
-import BookingDates from '../BookingDates'
-interface PlaceType {
-    photos: string[],
-    _id: string,
-    owner: string,
-    title: string,
-    address: string,
-    description: string,
-    perks: string[],
-    extraInfo: string,
-    checkIn: string,
-    checkOut: string,
-    maxGuests: Number,
-    __v: number
-}
-interface BookingProps {
-    __v: string,
-    _id: string,
-    place: PlaceType,
-    user: string,
-    checkIn: Date,
-    checkOut: Date,
-    maxGuests: Number,
-    price: Number,
-    name: string,
-    mobile: string,
-    numberOfGuests: Number,
-}
+import AddressLink from '../components/AddressLink'
+import PlaceGallery from '../components/PlaceGallery'
+import BookingDates from '../components/BookingDates'
+import { BookingProps } from '../Types/Types'
+
 const BookingPage = () => {
     const { id } = useParams()
     const [booking, setBooking] = useState<BookingProps | null>(null)

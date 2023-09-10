@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-interface PlacesProps {
-    _id:string,
-    __v:string,
-    owner: string,
-    title: string,
-    address: string,
-    photos: [string],
-    description: string,
-    perks: [string],
-    extraInfo: string,
-    checkIn: Number,
-    checkOut: Number,
-    maxGuests: Number,
-    price:Number,
-}
+import { PlaceType } from '../Types/Types'
+
 export const IndexPage = () => {
-    const [places, setPlaces] = useState<PlacesProps[]>([])
+    const [places, setPlaces] = useState<PlaceType[]>([])
     useEffect(() => {
         axios.get('/places').then((response) => {
             console.log(response.data)
@@ -32,14 +19,13 @@ export const IndexPage = () => {
                         <div className='bg-gray-500 mb-2 rounded-2xl'>
                             {
                                 place.photos?.[0] && (
-                                    <img className='rounded-2xl object-cover aspect-square' src={'http://localhost:4000/uploads/' + place.photos?.[0]} alt='' />
+                                    <img className='rounded-2xl object-cover aspect-square' src={'http://localhost:4000/' + place.photos?.[0]} alt='' />
                                 )
                             }
                         </div>
                         <h2 className='font-bold'>{place.address}</h2>
                         <h3 className='text-sm text-gray-500'>{place.title}</h3>
                         <div>
-                            {/* {(place.price===undefined ? 'Price NA' : "$ "+place.price+"  per Night")} */}
                             <span className='font-bold'>{"$ "+place.price}</span> per Night
                         </div>
                     </Link>

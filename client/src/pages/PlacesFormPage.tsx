@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import PhotosUploader from '../PhotosUploader';
-import Perks from '../Perks';
-import AccountNav from '../AccountNav';
+import PhotosUploader from '../components/PhotosUploader';
+import Perks from '../components/Perks';
+import AccountNav from '../components/AccountNav';
 import { Navigate, useParams } from 'react-router-dom';
 
 const PlacesFormPage = () => {
@@ -13,8 +13,8 @@ const PlacesFormPage = () => {
     const [description, setDescription] = useState('')
     const [perks, setPerks] = useState<string[]>([]);
     const [extraInfo, setExtraInfo] = useState('')
-    const [checkIn, setCheckIn] = useState('');
-    const [checkOut, setCheckOut] = useState('');
+    const [checkIn, setCheckIn] = useState<string>('');
+    const [checkOut, setCheckOut] = useState<string>('');
     const [maxGuests, setMaxGuests] = useState(1);
     const [price, setPrice] = useState(0)
     const [redirect, setRedirect] = useState(false)
@@ -57,6 +57,7 @@ const PlacesFormPage = () => {
         const placeData = {
             title,
             address,
+            addedPhotos,
             description,
             perks,
             extraInfo,

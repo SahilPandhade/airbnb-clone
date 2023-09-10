@@ -201,7 +201,6 @@ app.get('/places',async (req,res)=>{
 //make a booking
 app.post('/booking', (req,res) =>{
     const {place,checkIn,checkOut,numberOfGuests,name,mobile,price} = req.body;
-
     Booking.create({
         place,checkIn,checkOut,numberOfGuests,name,mobile,price,
         user:userData.id

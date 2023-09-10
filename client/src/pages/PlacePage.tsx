@@ -1,29 +1,13 @@
-import { faLocationDot, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { faTableCells } from '@fortawesome/free-solid-svg-icons/faTableCells';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import BookingWidget from '../BookingWidget';
-import PlaceGallery from '../PlaceGallery';
-import AddressLink from '../AddressLink';
-interface PlacesProps {
-    _id: string,
-    __v: string,
-    owner: string,
-    title: string,
-    address: string,
-    photos: string[],
-    description: string,
-    perks: string[],
-    extraInfo: string,
-    checkIn: string,
-    checkOut: string,
-    maxGuests: Number,
-    price: Number,
-}
+import BookingWidget from '../components/BookingWidget';
+import PlaceGallery from '../components/PlaceGallery';
+import AddressLink from '../components/AddressLink';
+import { PlaceType } from '../Types/Types';
+
 const PlacePage = () => {
-    const [place, setPlace] = useState<PlacesProps | null>(null)
+    const [place, setPlace] = useState<PlaceType | null>(null)
     const { id } = useParams();
 
     useEffect(() => {
@@ -36,8 +20,6 @@ const PlacePage = () => {
     }, [id])
 
     if (!place) return ''
-
-    
 
     return (
         <div className='mt-4 bg-gray-100 -mx-8 px-8 pt-8'>
