@@ -5,7 +5,7 @@ import React, { useContext } from 'react'
 import { UserContext } from './context/Context'
 import { Link } from 'react-router-dom'
 const Header = () => {
-    const {user} = useContext(UserContext)
+    const { user } = useContext(UserContext)
     return (
         <div>
             <header className='flex justify-between'>
@@ -19,9 +19,11 @@ const Header = () => {
                     <div>Any week</div>
                     <div className='border-l border-gray-300'></div>
                     <div>Add guests</div>
-                    <button className='bg-primary text-white p-1 rounded-full'><FontAwesomeIcon icon={faMagnifyingGlass} className='w-4 h-4' /></button>
+                    <button className='bg-primary text-white p-1 w-8 h-8 rounded-full'>
+                        <FontAwesomeIcon icon={faMagnifyingGlass} className='w-4 h-4' />
+                    </button>
                 </div>
-                <Link to={user? '/account' : '/login'} className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4">
+                <Link to={user ? '/account' : '/login'} className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4">
                     <FontAwesomeIcon icon={faBars} className='w-6 h-6' />
                     <div className="flex bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
                         <FontAwesomeIcon icon={faUser} className='w-6 h-6 relative top-1' />

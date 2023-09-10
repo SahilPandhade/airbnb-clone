@@ -1,36 +1,50 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { UserContext } from '../context/Context'
 import { Navigate, useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import axios from 'axios'
+import PlacesPage from './PlacesPage'
+import AccountNav from '../AccountNav'
 
 const AccountPage = () => {
-    const { ready, user } = useContext(UserContext)
+    const [redirect, setRedirect] = useState<string | null>(null)
+    const { ready, user, setUser } = useContext(UserContext)
     let { subpage } = useParams()
-    if(subpage===undefined){
+    if (subpage === undefined) {
         subpage = 'profile'
     }
-    const linkClasses = (type: string | null = null) => {
-        let classes = 'py-2 px-6'
-        if (type === subpage) {
-            classes += ' bg-primary rounded-full'
-        }
-        return classes
+
+    const handleLogOut = async () => {
+        await axios.post('/logout');
+        setRedirect('/')
+        setUser(null)
     }
     if (!ready) {
         return 'Loading...'
     }
-    if (!ready && !user) {
+    if (!ready && !user && !redirect) {
         return <Navigate to={'/login'} />
+    }
+
+    if (redirect) {
+        return <Navigate to={redirect} />
     }
 
     return (
         <div>
-            <nav className='w-full flex justify-center mt-8 gap-4'>
-                <Link className={linkClasses('profile')} to={'/account'}>My profile</Link>
-                <Link className={linkClasses('bookings')} to={'/account/bookings'}>My bookings</Link>
-                <Link className={linkClasses('places')} to={'/account/places'}>My accommodations</Link>
-
-            </nav>
+            <AccountNav />
+            {
+                subpage === 'profile' && (
+                    <div className="text-center max-w-lg mx-auto">
+                        Logged in as {user?.name} ({user?.email})<br />
+                        <button onClick={handleLogOut} className='primary max-w-sm mt-2'>Logout</button>
+                    </div>
+                )
+            }
+            {
+                subpage === 'places' && (
+                    <PlacesPage />
+                )
+            }
         </div>
     )
 }

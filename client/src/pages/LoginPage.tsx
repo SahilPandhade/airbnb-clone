@@ -19,6 +19,7 @@ const LoginPage = () => {
             alert('Login Successful')
             setRedirect(true)
         } catch (e) {
+            console.log("Login error: ",e)
             alert('Login failed!')
         }
 
