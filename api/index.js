@@ -4,6 +4,7 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const User = require('./models/User.js')
 const Place = require('./models/Place.js')
+const Booking = require('./models/Booking.js')
 const bcrypt = require('bcryptjs')
 require('dotenv').config()
 
@@ -26,8 +27,20 @@ app.use(cors({
     origin: 'http://localhost:5173'
 }))
 
+//connect to mongodb
 mongoose.connect(process.env.MONGO_URL)
 
+//function to get user data from req
+function getUserDataFromReq(req) {
+    return new Promise((resolve,reject)=>{
+        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => { 
+            if(err) throw err;
+            resolve(userData);
+        })
+    })
+}
+
+//POST request to db to store registered user data
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
     try {
@@ -42,10 +55,11 @@ app.post('/register', async (req, res) => {
     }
 })
 
+//POST request to db to log in existing user.
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
     const userDoc = await User.findOne({ email });
+
     if (userDoc) {
         const passOk = bcrypt.compareSync(password, userDoc.password)
         if (passOk) {
@@ -67,37 +81,40 @@ app.post('/login', async (req, res) => {
     }
 })
 
+//Log out
 app.post('/logout', (req, res) => {
-    res.cookie('token', '').json()
+    res.cookie('token', '').json(true)
 })
 
+//get profile
 app.get('/profile', (req, res) => {
     const { token } = req.cookies;
     if (token) {
         jwt.verify(token, jwtSecret, {}, async (err, user) => {
             if (err) throw err;
-            const userDoc = await User.findById(user.id);
-            res.json(userDoc)
+            const {name,email,_id} = await User.findById(user.id);
+            res.json({name,email,_id})
         })
     } else {
         res.json(null);
     }
 })
 
+//upload a image by link
 app.post('/upload-by-link', cors({ credentials: true, origin: 'http://localhost:5173' }), (req, res) => {
     const { link } = req.body;
     const newName = 'photo' + Date.now() + ".jpg"
     imageDownloader.image({
         url: link,
-        dest: path.join(__dirname, 'uploads', newName)
+        dest: '/uploads/' + newName
     }).then((response) => {
-        console.log("response: " + response.filename)
-        res.json("uploads/" + newName)
+        res.json(newName)
     }).catch((err) => {
         console.log("Error uploading file by link", err);
     })
 })
 
+//upload image files
 const photosMiddleWare = multer({ dest: 'uploads/' })
 app.post('/upload', photosMiddleWare.array('photos', 100), (req, res) => {
     const uploadedFiles = []
@@ -105,18 +122,17 @@ app.post('/upload', photosMiddleWare.array('photos', 100), (req, res) => {
         const { path, originalname } = req.files[i];
         const parts = originalname.split(".");
         const ext = parts[parts.length - 1];
-        const newPath = path + "." + ext;
+        const newPath = path + "." + ext;   //new name of uploaded file with the appropriate extension
         fs.renameSync(path, newPath);
-        console.log("path: " + path + " newPath: " + newPath)
         uploadedFiles.push(newPath.replace('uploads/', ''));
     }
-    console.log("uplaoded files", uploadedFiles)
     res.json(uploadedFiles);
 })
 
+//Store info about place
 app.post('/places', (req, res) => {
     const { token } = req.cookies;
-    const { title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests } = req.body;
+    const { title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests ,price} = req.body;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         const placeDoc = await Place.create({
@@ -129,13 +145,15 @@ app.post('/places', (req, res) => {
             extraInfo,
             checkIn,
             checkOut,
-            maxGuests
+            maxGuests,
+            price
         })
         res.json(placeDoc)
     })
 })
 
-app.get('/places', (req,res)=>{
+//get user-place data
+app.get('/user-places', (req,res)=>{
     const { token } = req.cookies;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         const {id} = userData
@@ -143,15 +161,18 @@ app.get('/places', (req,res)=>{
     })
 })
 
+//get a specific place data
 app.get('/places/:id',async (req,res)=>{
     const {id} = req.params;
     res.json(await Place.findById(id));
 })
 
+//update place info
 app.put('/places',async (req,res)=>{
     const { token } = req.cookies;
-    const { id,title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests } = req.body;
-    jwt.verify(token, jwtSecret, {}, async (err, userData) => {   
+    const { id,title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests,price } = req.body;
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {  
+        if(err) throw err; 
         const placeDoc = await Place.findById(id);
         if(userData.id === placeDoc.owner.toString()){
             placeDoc.set({
@@ -163,12 +184,38 @@ app.put('/places',async (req,res)=>{
                 extraInfo,
                 checkIn,
                 checkOut,
-                maxGuests
+                maxGuests,
+                price
             })
             await placeDoc.save()
             res.json('ok')
         }
     })
+})
+
+//get all places
+app.get('/places',async (req,res)=>{
+    res.json( await Place.find() )
+})
+
+//make a booking
+app.post('/booking', (req,res) =>{
+    const {place,checkIn,checkOut,numberOfGuests,name,mobile,price} = req.body;
+
+    Booking.create({
+        place,checkIn,checkOut,numberOfGuests,name,mobile,price,
+        user:userData.id
+    }).then((doc)=>{
+        res.json(doc)
+    }).catch((err)=>{
+        throw err;
+    })
+})
+
+//get all bookings by a user
+app.get('/bookings',async (req,res)=>{
+    const userData = await getUserDataFromReq(req)
+    res.json(await Booking.find({user : userData.id}).populate('place'))
 })
 
 app.listen(4000)

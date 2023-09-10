@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+
+uploads/*
+!uploads/ReadME
 #production
 build
 
